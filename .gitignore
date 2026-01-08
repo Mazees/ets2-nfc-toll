@@ -1,0 +1,27 @@
+# Build output
+build/
+
+# Dependencies
+node_modules/
+
+# Logs
+*.log
+tunnel.log
+ngrok.log
+lt.log
+
+# Runtime files
+trigger.txt
+tunnel_url.txt
+ngrok_token.txt
+
+# Executables (keep source files only)
+*.exe
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# IDE
+.vscode/
+.idea/

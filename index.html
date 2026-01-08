@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GTO ETS2 Trigger</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #121212;
+      font-family: 'VT323', monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+      color: white;
+    }
+
+    /* OVERLAY */
+    #startOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      cursor: pointer;
+    }
+
+    /* KONTAINER LAYAR TOL */
+    .gto-frame {
+      width: 95%;
+      max-width: 500px;
+      background: #222;
+      border: 8px solid #444;
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 0 50px rgba(0,0,0,0.9);
+      position: relative;
+    }
+
+    /* LAYAR LED UTAMA */
+    .led-display {
+      background: #000;
+      height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid #111;
+    }
+
+    /* Efek Grid LED */
+    .led-display::before {
+      content: " ";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: 
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+      background-size: 100% 2px, 3px 100%;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .info-text {
+      font-size: 4rem;
+      line-height: 1;
+      margin: 0;
+      z-index: 1;
+      text-align: center;
+    }
+    
+    .price-text {
+      font-size: 2rem;
+      margin-top: 10px;
+      z-index: 1;
+      opacity: 0.8;
+    }
+
+    /* AREA INSTRUKSI BAWAH */
+    .instruction-area {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #888;
+    }
+
+    .scan-animation {
+      position: relative;
+      width: 60px;
+      height: 100px;
+      border: 2px solid #555;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 10px;
+      background: #1a1a1a;
+    }
+
+    /* Kartu bergerak di belakang HP */
+    .card-hint {
+      position: absolute;
+      width: 40px;
+      height: 60px;
+      background: #ffcc00;
+      border-radius: 4px;
+      z-index: -1; /* Di belakang HP */
+      animation: scanMove 2s infinite ease-in-out;
+    }
+
+    @keyframes scanMove {
+      0% { transform: translate(30px, 10px) rotate(10deg); opacity: 0; }
+      20% { opacity: 1; }
+      50% { transform: translate(0, 0) rotate(0deg); } /* Posisi nempel */
+      80% { opacity: 1; }
+      100% { transform: translate(-30px, 10px) rotate(-10deg); opacity: 0; }
+    }
+
+    /* BLINK ANIMATION */
+    .blink { animation: blinker 1s linear infinite; }
+    @keyframes blinker { 50% { opacity: 0; } }
+
+    /* STATUS COLORS */
+    .color-red { color: #ff3333; text-shadow: 0 0 15px rgba(255, 51, 51, 0.6); }
+    .color-yellow { color: #ffff33; text-shadow: 0 0 15px rgba(255, 255, 51, 0.6); }
+    .color-green { color: #33ff33; text-shadow: 0 0 15px rgba(51, 255, 51, 0.6); }
+
+  </style>
+</head>
+<body>
+
+  <div id="startOverlay">
+    <span class="material-icons" style="font-size: 64px; color: #33ff33; margin-bottom: 20px;">touch_app</span>
+    <h1 style="font-size: 24px;">SISTEM TOL TERINTEGRASI</h1>
+    <p class="blink" style="color: #888; margin-top: 10px;">[ TAP LAYAR UNTUK MULAI ]</p>
+  </div>
+
+  <div class="gto-frame">
+    <div style="text-align: center; font-size: 14px; color: #555; margin-bottom: 5px; letter-spacing: 2px;">
+      GERBANG TOL OTOMATIS
+    </div>
+
+    <div class="led-display">
+      <div id="mainText" class="info-text color-red">TUTUP</div>
+      <div id="subText" class="price-text color-red">---</div>
+    </div>
+
+    <div class="instruction-area">
+      <div class="scan-animation">
+        <span class="material-icons" style="font-size: 30px; color: #555;">smartphone</span>
+        <div class="card-hint"></div>
+      </div>
+      <div style="font-family: sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">
+        Tempel Kartu di Belakang HP
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const mainText = document.getElementById("mainText");
+    const subText = document.getElementById("subText");
+    const overlay = document.getElementById("startOverlay");
+    
+    let audioCtx;
+
+    // Fungsi Audio Oscillator (Sama seperti sebelumnya)
+    function playBeep(type) {
+      if (!audioCtx) return;
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+
+      if (type === 'success') {
+        oscillator.type = 'square';
+        oscillator.frequency.setValueAtTime(1200, audioCtx.currentTime); 
+        oscillator.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.1);
+        gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 0.15);
+      } else {
+        oscillator.type = 'sawtooth';
+        oscillator.frequency.value = 150;
+        gainNode.gain.value = 0.1;
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 0.5);
+      }
+    }
+
+    function updateScreen(state) {
+      // Reset Class
+      mainText.className = "info-text";
+      subText.className = "price-text";
+
+      if (state === 'IDLE') {
+        mainText.innerText = "TEMPEL";
+        subText.innerText = "KARTU";
+        mainText.classList.add("color-red");
+        subText.classList.add("color-red");
+      } 
+      else if (state === 'PROCESSING') {
+        mainText.innerText = "PROSES";
+        subText.innerText = "MOHON TUNGGU";
+        mainText.classList.add("color-yellow");
+        subText.classList.add("color-yellow");
+      }
+      else if (state === 'SUCCESS') {
+        mainText.innerText = "BUKA"; // Atau "GO"
+        subText.innerText = "Pembayaran Berhasil";
+        mainText.classList.add("color-green");
+        subText.classList.add("color-green");
+      }
+      else if (state === 'ERROR') {
+        mainText.innerText = "GAGAL";
+        subText.innerText = "COBA LAGI";
+        mainText.classList.add("color-red");
+        subText.classList.add("color-red");
+      }
+    }
+
+    async function startSystem() {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      
+      if (!("NDEFReader" in window)) {
+        alert("Fitur NFC tidak didukung browser ini.");
+        return;
+      }
+
+      try {
+        const ndef = new NDEFReader();
+        await ndef.scan();
+        
+        overlay.style.display = 'none';
+        updateScreen('IDLE');
+
+        ndef.addEventListener("reading", async () => {
+          // 1. Feedback Awal
+          updateScreen('PROCESSING');
+          playBeep('success'); 
+
+          // 2. Kirim Request
+          const url = "/pay?time=" + Date.now();
+          
+          try {
+            const res = await fetch(url, {
+              headers: { "ngrok-skip-browser-warning": "true" }
+            });
+
+            if (res.ok) {
+              updateScreen('SUCCESS');
+              setTimeout(() => updateScreen('IDLE'), 2500);
+            } else {
+              updateScreen('ERROR');
+              setTimeout(() => updateScreen('IDLE'), 2000);
+            }
+          } catch (err) {
+            updateScreen('ERROR');
+            playBeep('error'); // Bunyi Tet!
+            setTimeout(() => updateScreen('IDLE'), 2000);
+          }
+        });
+
+      } catch (err) {
+        alert("Gagal start NFC: " + err);
+      }
+    }
+
+    overlay.addEventListener("click", startSystem);
+  </script>
+</body>
+</html>
