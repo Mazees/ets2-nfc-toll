@@ -31,7 +31,7 @@
 2. Get your Auth Token from [dashboard](https://dashboard.ngrok.com/get-started/your-authtoken)
 
 ### 2. Run the Tool
-1. Download the latest release
+1. Download the latest release from [GitHub](https://github.com/Mazees/ets2-nfc-toll/releases)
 2. Extract and run `run.bat`
 3. Enter your Ngrok token when prompted (first time only)
 4. Wait for the tunnel URL
