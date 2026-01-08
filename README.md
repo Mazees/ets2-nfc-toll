@@ -92,9 +92,9 @@ npm install
 If you modify `autokey.ahk`, you must recompile it to `autokey.exe`:
 
 1.  Install [AutoHotkey](https://www.autohotkey.com/).
-2.  Right-click `autokey.ahk` in your file explorer.
-3.  Select **Compile Script**.
-4.  This will generate a new `autokey.exe`.
+2.  Open AutoHotkey.
+3.  Select **Compile Script**, select file `autokey.ahk` and save with name `autokey.exe`.
+4.  Place `autokey.exe` in root project.
 
 ### 4. Build for Distribution
 
@@ -110,7 +110,7 @@ This script will:
 - Bundle `server/index.js` into `server.exe`.
 - Copy all necessary files (`ngrok.exe`, `autokey.exe`, `index.html`, etc.) into the `build/` folder.
 
-### 5. Running in Development Mode
+### 5. Running server in Development Mode
 
 ```bash
 # Start the server directly
