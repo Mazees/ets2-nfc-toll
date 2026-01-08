@@ -16,10 +16,12 @@
 ## Requirements
 
 ### PC
+
 - Windows 10/11 (64-bit)
 - Internet connection
 
 ### Phone
+
 - Android with NFC support
 - **Chrome browser** (required - other browsers don't support Web NFC)
 - Internet connection
@@ -27,16 +29,19 @@
 ## Quick Start
 
 ### 1. Download & Setup Ngrok
+
 1. Create free account at [ngrok.com](https://ngrok.com)
 2. Get your Auth Token from [dashboard](https://dashboard.ngrok.com/get-started/your-authtoken)
 
 ### 2. Run the Tool
+
 1. Download the latest release from [GitHub](https://github.com/Mazees/ets2-nfc-toll/releases)
 2. Extract and run `run.bat`
 3. Enter your Ngrok token when prompted (first time only)
 4. Wait for the tunnel URL
 
 ### 3. Connect Your Phone
+
 1. Open Chrome on your Android phone
 2. Navigate to the ngrok URL shown on PC
 3. Tap screen to start
@@ -63,29 +68,54 @@ ets2-toll-server/
 
 ## Development
 
-### Prerequisites
-- Node.js 18+
-- npm
-- AutoHotkey (for compiling .ahk)
+### 1. Clone the Project
 
-### Setup
 ```bash
+# Clone the repository
+git clone https://github.com/Mazees/ets2-nfc-toll.git
+
+# Enter the directory
+cd ets2-nfc-toll
+
 # Install dependencies
 npm install
-
-# Install global tools
-npm install -g pkg
-
-# Run in development
-node server/index.js
 ```
 
-### Build for Distribution
+### 2. Prerequisites
+
+- **Node.js**: Version 18 or higher.
+- **AutoHotkey**: Required only if you want to modify or recompile the automation script.
+- **pkg**: Global package for bundling the server (`npm install -g pkg`).
+
+### 3. Compiling AutoHotkey Script
+
+If you modify `autokey.ahk`, you must recompile it to `autokey.exe`:
+
+1.  Install [AutoHotkey](https://www.autohotkey.com/).
+2.  Right-click `autokey.ahk` in your file explorer.
+3.  Select **Compile Script**.
+4.  This will generate a new `autokey.exe`.
+
+### 4. Build for Distribution
+
+To create the portable version in the `build/` folder:
+
 ```bash
-# Run build script
 build.bat
 ```
-This creates portable executables in the `build/` folder.
+
+This script will:
+
+- Clear the `build/` directory.
+- Bundle `server/index.js` into `server.exe`.
+- Copy all necessary files (`ngrok.exe`, `autokey.exe`, `index.html`, etc.) into the `build/` folder.
+
+### 5. Running in Development Mode
+
+```bash
+# Start the server directly
+node server/index.js
+```
 
 ## Tech Stack
 
@@ -97,12 +127,12 @@ This creates portable executables in the `build/` folder.
 
 ## Troubleshooting
 
-| Problem | Solution |
-|---------|----------|
-| Link not appearing | Check Ngrok token, delete `ngrok_token.txt` and retry |
-| NFC not detected | Use Chrome browser, enable NFC in phone settings |
-| Toll not paying | Make sure ETS2 window is focused, check autokey.exe in Task Manager |
-| Trigger error | Run as Administrator |
+| Problem            | Solution                                                            |
+| ------------------ | ------------------------------------------------------------------- |
+| Link not appearing | Check Ngrok token, delete `ngrok_token.txt` and retry               |
+| NFC not detected   | Use Chrome browser, enable NFC in phone settings                    |
+| Toll not paying    | Make sure ETS2 window is focused, check autokey.exe in Task Manager |
+| Trigger error      | Run as Administrator                                                |
 
 ## License
 
@@ -119,6 +149,7 @@ See the [LICENSE](LICENSE) file for more details.
 **Developer**: MAZEES
 
 **Powered by**:
+
 - [Express.js](https://expressjs.com/) - Web framework
 - [Ngrok](https://ngrok.com/) - Secure tunnels
 - [AutoHotkey](https://www.autohotkey.com/) - Automation
