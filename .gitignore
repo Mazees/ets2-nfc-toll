@@ -25,3 +25,5 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+
+RELEASE_NOTES.md
