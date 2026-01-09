@@ -8,7 +8,7 @@
 ## Features
 
 - **NFC Trigger** - Use any NFC card/tag to pay toll
-Disclaimer: This feature doesn't affect your card balance. Your card only serves as a trigger.
+( Disclaimer: This feature doesn't affect your card balance. Your card only serves as a trigger. )
 - **Remote Access** - Control from phone via internet (Ngrok tunnel)
 - **Real-time** - Instant response when NFC is tapped
 - **Auto Keypress** - Automatically presses Enter in game
